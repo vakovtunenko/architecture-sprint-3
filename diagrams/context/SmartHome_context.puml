@@ -1,0 +1,24 @@
+@startuml
+title SmartHome Context Diagram
+
+top to bottom direction
+
+!includeurl ../c4_templates/C4_Context.puml
+
+Person(User, "User", "A SmartHome User")
+Person(Specialist, "Specialist", "A SmartHome Connection Specialist")
+
+System(SmartHomeSystem, "Smart Home System", "Smart Home System Managing")
+
+Rel(User, SmartHomeSystem, "Manages heating, views temperature, pays for services")
+Rel(Specialist, SmartHomeSystem, "Registers users and heating systems, installs temperature sensors, carries maintenance work")
+
+System_Ext(HeatingSystem, "Heating System", "Heating managing device")
+System_Ext(TemperatureSensor, "Temperature Sensor", "Temperature measuring device")
+System_Ext(PaymentProvider, "Payment Provider", "External system for processing payments")
+
+Rel(SmartHomeSystem,HeatingSystem,"Sends heating managing commands, fetches device state")
+Rel(SmartHomeSystem,TemperatureSensor,"Fetches Temperature")
+Rel(SmartHomeSystem,PaymentProvider,"Processes payments")
+
+@enduml
