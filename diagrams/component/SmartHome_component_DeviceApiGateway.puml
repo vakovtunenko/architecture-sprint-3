@@ -1,0 +1,32 @@
+@startuml
+title Диаграмма Компонентов: Device Gateway
+
+!includeurl ../c4_templates/C4_Component.puml
+
+System_Ext(Devices, "Устройства", "Различные устройства, приборы, датчики и тп")
+ContainerQueue_Ext(Kafka, "Kafka", "Kafka", "Брокер сообщений")
+
+Container(DeviceGateway, "Device Gateway", "Java, Spring Boot", "Инкапсулирует логику взаимодействия с устройствами") {
+    Component(DeviceGatewayService, "DeviceGatewayService", "Содержит управляющую логику между всеми компонентами")
+    Component(DeviceProtocolResolver, "DeviceProtocolResolver", "Определяет протокол по которому работает устройство")
+    Component(DeviceRequestSender, "DeviceRequestSender", "Содержит логику отправки запросов устройствам по различным протоколам")
+    Component(DeviceDataReceiver, "DeviceDataReceiver", "Содержит логику получения данных от устройств по различным протоколам")
+    Component(KafkaProducer, "KafkaProducer", "Компонент отправки сообщений в кафку")
+    Component(KafkaListener, "KafkaListener", "Компонент чтения сообщений из кафки")
+}
+
+Rel(Kafka, KafkaListener, "Чтение сообщений")
+Rel(KafkaListener, DeviceGatewayService, "Обработка сообщений")
+Rel(DeviceGatewayService, DeviceRequestSender, "Отправляет команду")
+Rel(DeviceRequestSender, DeviceProtocolResolver, "Определяет протокол устройства")
+Rel(DeviceRequestSender, Devices, "Отправляет команду устройству")
+
+
+Rel(Devices, DeviceDataReceiver, "Отправка данных")
+Rel(DeviceDataReceiver, DeviceGatewayService, "Отправка данных")
+Rel(DeviceGatewayService, KafkaProducer, "Отправка сообщений")
+
+Rel(KafkaProducer, Kafka, "Отправка сообщений")
+
+
+@enduml

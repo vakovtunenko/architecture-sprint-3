@@ -1,0 +1,35 @@
+@startuml
+title Диаграмма Компонентов: Monitoring Service
+
+!includeurl ../c4_templates/C4_Component.puml
+
+ContainerDb(MonitoringServiceDatabase, "Monitoring Service Database", "PostgreSQL", "Хранение настроек пользователей для алертинга")
+ContainerQueue_Ext(Kafka, "Kafka", "Kafka", "Брокер сообщений")
+Container_Ext(TelemetryService, "Telemetry Service", "Java, Spring Boot", "Обработка показателей с устройств и датчиков")
+
+Container(MonitoringService, "Monitoring Service", "Java, Spring Boot", "Мониторинг и алертинг") {
+    Component(MonitoringController, "MonitoringController", "REST API сервиса")
+    Component(MonitoringServiceLayer, "MonitoringServiceLayer", "Реализация бизнес-логики")
+    Component(MonitoringRepositoryLayer, "MonitoringRepositoryLayer", "Слой взаимодействия с БД")
+
+    Component(KafkaProducer, "KafkaProducer", "Компонент отправки сообщений в кафку")
+    Component(KafkaListener, "KafkaListener", "Компонент чтения сообщений из кафки")
+    Component(MonitoringHTTPClient, "MonitoringHTTPClient", "HTTP клиент")
+}
+
+Rel(MonitoringController, MonitoringServiceLayer, "Вызов бизнес-логики")
+Rel(MonitoringServiceLayer, MonitoringRepositoryLayer, "Обращение к слою доступа к данным")
+Rel(MonitoringRepositoryLayer, MonitoringServiceDatabase, "Чтение/запись данных")
+
+Rel(MonitoringServiceLayer, MonitoringHTTPClient, "Отправка запросов другим сервисам")
+
+Rel(MonitoringServiceLayer, KafkaProducer, "Отправка сообщений")
+
+Rel(KafkaListener, MonitoringServiceLayer, "Обработка сообщений")
+
+Rel(KafkaProducer, Kafka, "Отправка сообщений")
+Rel(Kafka, KafkaListener, "Чтение сообщений")
+Rel(MonitoringHTTPClient, TelemetryService, "Отправка запроса")
+
+
+@enduml

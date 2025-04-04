@@ -1,0 +1,19 @@
+@startuml
+title Диаграмма Компонентов: User Service
+
+!includeurl ../c4_templates/C4_Component.puml
+
+ContainerDb(UserServiceDatabase, "User Service Database", "PostgreSQL", "Хранение персональных данных пользователя")
+
+Container(UserService, "User Service", "Java, Spring Boot", "Обработка персональных данных пользователя") {
+  Component(UserController, "UserController", "REST API сервиса")
+  Component(UserServiceLayer, "UserServiceLayer", "Реализация бизнес-логики")
+  Component(UserRepositoryLayer, "UserRepositoryLayer", "Слой взаимодействия с БД")
+}
+
+Rel(UserController, UserServiceLayer, "Вызов бизнес-логики")
+Rel(UserServiceLayer, UserRepositoryLayer, "Обращение к слою доступа к данным")
+Rel(UserRepositoryLayer, UserServiceDatabase, "Чтение/запись данных")
+
+
+@enduml

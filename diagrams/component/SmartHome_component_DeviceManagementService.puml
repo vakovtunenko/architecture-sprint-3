@@ -1,0 +1,69 @@
+@startuml
+title Диаграмма Компонентов: Device Management Service
+
+!includeurl ../c4_templates/C4_Component.puml
+
+ContainerDb(DeviceManagementServiceDatabase, "Device Management Service Database", "PostgreSQL", "Хранение данных устройств")
+Container_Ext(TelemetryService, "Telemetry Service", "Java, Spring Boot", "Обработка показателей с устройств и датчиков")
+Container_Ext(Kafka, "Kafka", "Kafka", "Брокер сообщений")
+
+Container(DeviceManagementService, "Device Management Service", "Java, Spring Boot", "Управление устройствами") {
+    Component(HeatingManagementController, "HeatingManagementController", "REST API сервиса")
+    Component(HeatingManagementServiceLayer, "HeatingManagementServiceLayer", "Реализация бизнес-логики")
+    Component(HeatingManagementRepositoryLayer, "HeatingManagementRepositoryLayer", "Слой взаимодействия с БД")
+
+    Component(LightingManagementController, "LightingManagementController", "REST API сервиса")
+    Component(LightingManagementServiceLayer, "LightingManagementServiceLayer", "Реализация бизнес-логики")
+    Component(LightingManagementRepositoryLayer, "LightingManagementRepositoryLayer", "Слой взаимодействия с БД")
+
+    Component(GateManagementController, GateManagementController", "REST API сервиса")
+    Component(GateManagementServiceLayer, GateManagementServiceLayer", "Реализация бизнес-логики")
+    Component(GateManagementRepositoryLayer, GateManagementRepositoryLayer", "Слой взаимодействия с БД")
+
+    Component(ObservationManagementController, ObservationManagementController", "REST API сервиса")
+    Component(ObservationManagementServiceLayer, ObservationManagementServiceLayer", "Реализация бизнес-логики")
+    Component(ObservationManagementRepositoryLayer, ObservationManagementRepositoryLayer", "Слой взаимодействия с БД")
+
+    Component(KafkaProducer, "KafkaProducer", "Компонент отправки сообщений в кафку")
+    Component(KafkaListener, "KafkaListener", "Компонент чтения сообщений из кафки")
+    Component(DeviceManagementHTTPClient, "DeviceManagementHTTPClient", "HTTP клиент")
+}
+
+Rel(HeatingManagementController, HeatingManagementServiceLayer, "Вызов бизнес-логики")
+Rel(HeatingManagementServiceLayer, HeatingManagementRepositoryLayer, "Обращение к слою доступа к данным")
+Rel(HeatingManagementRepositoryLayer, DeviceManagementServiceDatabase, "Чтение/запись данных")
+
+Rel(LightingManagementController, LightingManagementServiceLayer, "Вызов бизнес-логики")
+Rel(LightingManagementServiceLayer, LightingManagementRepositoryLayer, "Обращение к слою доступа к данным")
+Rel(LightingManagementRepositoryLayer, DeviceManagementServiceDatabase, "Чтение/запись данных")
+
+Rel(GateManagementController, GateManagementServiceLayer, "Вызов бизнес-логики")
+Rel(GateManagementServiceLayer, GateManagementRepositoryLayer, "Обращение к слою доступа к данным")
+Rel(GateManagementRepositoryLayer, DeviceManagementServiceDatabase, "Чтение/запись данных")
+
+Rel(ObservationManagementController, ObservationManagementServiceLayer, "Вызов бизнес-логики")
+Rel(ObservationManagementServiceLayer, ObservationManagementRepositoryLayer, "Обращение к слою доступа к данным")
+Rel(ObservationManagementRepositoryLayer, DeviceManagementServiceDatabase, "Чтение/запись данных")
+
+Rel(HeatingManagementServiceLayer, KafkaProducer, "Отправка сообщений")
+Rel(LightingManagementServiceLayer, KafkaProducer, "Отправка сообщений")
+Rel(GateManagementServiceLayer, KafkaProducer, "Отправка сообщений")
+Rel(ObservationManagementServiceLayer, KafkaProducer, "Отправка сообщений")
+
+Rel(KafkaListener, HeatingManagementServiceLayer, "Обработка сообщений")
+Rel(KafkaListener, LightingManagementServiceLayer, "Обработка сообщений")
+Rel(KafkaListener, GateManagementServiceLayer, "Обработка сообщений")
+Rel(KafkaListener, ObservationManagementServiceLayer, "Обработка сообщений")
+
+Rel(HeatingManagementServiceLayer, DeviceManagementHTTPClient, "Отправка запросов другим сервисам")
+Rel(LightingManagementServiceLayer, DeviceManagementHTTPClient, "Отправка запросов другим сервисам")
+Rel(GateManagementServiceLayer, DeviceManagementHTTPClient, "Отправка запросов другим сервисам")
+Rel(ObservationManagementServiceLayer, DeviceManagementHTTPClient, "Отправка запросов другим сервисам")
+
+Rel(KafkaProducer, Kafka, "Отправка сообщений")
+Rel(Kafka, KafkaListener, "Чтение сообщений")
+
+Rel(DeviceManagementHTTPClient, TelemetryService, "Отправка запроса")
+
+
+@enduml

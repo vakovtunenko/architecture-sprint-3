@@ -1,0 +1,30 @@
+@startuml
+title Диаграмма Компонентов: Telemetry Service
+
+!includeurl ../c4_templates/C4_Component.puml
+
+ContainerDb(TelemetryServiceDatabase, "Telemetry Service Database", "PostgreSQL", "Хранение показателей")
+ContainerQueue_Ext(Kafka, "Kafka", "Kafka", "Брокер сообщений")
+
+Container(TelemetryService, "Telemetry Service", "Java, Spring Boot", "Обработка показателей с устройств и датчиков") {
+    Component(TelemetryController, "TelemetryController", "REST API сервиса")
+    Component(TelemetryServiceLayer, "TelemetryServiceLayer", "Реализация бизнес-логики")
+    Component(TelemetryRepositoryLayer, "TelemetryRepositoryLayer", "Слой взаимодействия с БД")
+
+    Component(KafkaProducer, "KafkaProducer", "Компонент отправки сообщений в кафку")
+    Component(KafkaListener, "KafkaListener", "Компонент чтения сообщений из кафки")
+}
+
+Rel(TelemetryController, TelemetryServiceLayer, "Вызов бизнес-логики")
+Rel(TelemetryServiceLayer, TelemetryRepositoryLayer, "Обращение к слою доступа к данным")
+Rel(TelemetryRepositoryLayer, TelemetryServiceDatabase, "Чтение/запись данных")
+
+Rel(TelemetryServiceLayer, KafkaProducer, "Отправка сообщений")
+
+Rel(KafkaListener, TelemetryServiceLayer, "Обработка сообщений")
+
+Rel(KafkaProducer, Kafka, "Отправка сообщений")
+Rel(Kafka, KafkaListener, "Чтение сообщений")
+
+
+@enduml

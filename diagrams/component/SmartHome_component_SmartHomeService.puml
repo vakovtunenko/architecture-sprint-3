@@ -1,0 +1,23 @@
+@startuml
+title Диаграмма Компонентов: Smart Home Service
+
+!includeurl ../c4_templates/C4_Component.puml
+
+ContainerDb(SmartHomeServiceDatabase, "Smart Home Service Database", "PostgreSQL", "Хранение данных по умному дому")
+Container_Ext(DeviceManagementService, "Device Management Service", "Java, Spring Boot", "Управление устройствами")
+
+Container(SmartHomeService, "Smart Home Service", "Java, Spring Boot", "Управление умным домом") {
+  Component(SmartHomeController, "SmartHomeController", "REST API сервиса")
+  Component(SmartHomeServiceLayer, "SmartHomeServiceLayer", "Реализация бизнес-логики")
+  Component(SmartHomeRepositoryLayer, "SmartHomeRepositoryLayer", "Слой взаимодействия с БД")
+  Component(SmartHomeHTTPClient, "SmartHomeHTTPClient", "HTTP клиент")
+}
+
+Rel(SmartHomeController, SmartHomeServiceLayer, "Вызов бизнес-логики")
+Rel(SmartHomeServiceLayer, SmartHomeRepositoryLayer, "Обращение к слою доступа к данным")
+Rel(SmartHomeServiceLayer, SmartHomeHTTPClient, "Отправка запросов другим сервисам")
+Rel(SmartHomeRepositoryLayer, SmartHomeServiceDatabase, "Чтение/запись данных")
+Rel(SmartHomeHTTPClient, DeviceManagementService, "Отправка запроса")
+
+
+@enduml

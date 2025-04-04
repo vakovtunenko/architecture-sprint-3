@@ -86,15 +86,22 @@
 
 # Задание 2. Проектирование микросервисной архитектуры
 
-В этом задании вам нужно предоставить только диаграммы в модели C4. Мы не просим вас отдельно описывать получившиеся микросервисы и то, как вы определили взаимодействия между компонентами To-Be системы. Если вы правильно подготовите диаграммы C4, они и так это покажут.
-
 **Диаграмма контейнеров (Containers)**
 
 [Диаграмма контейнеров](diagrams/container/SmartHome_container.puml)
 
 **Диаграмма компонентов (Components)**
 
-Добавьте диаграмму для каждого из выделенных микросервисов.
+- [Диаграмма компонентов AuthService](diagrams/component/SmartHome_component_AuthService.puml)
+- [Диаграмма компонентов SmartHomeService](diagrams/component/SmartHome_component_SmartHomeService.puml)
+- [Диаграмма компонентов AutomationScriptService](diagrams/component/SmartHome_component_AutomationScriptService.puml)
+- [Диаграмма компонентов DeviceManagementService](diagrams/component/SmartHome_component_DeviceManagementService.puml)
+- [Диаграмма компонентов MonitoringService](diagrams/component/SmartHome_component_MonitoringService.puml)
+- [Диаграмма компонентов TelemetryService](diagrams/component/SmartHome_component_TelemetryService.puml)
+- [Диаграмма компонентов UserService](diagrams/component/SmartHome_component_UserService.puml)
+- [Диаграмма компонентов NotificationService](diagrams/component/SmartHome_component_NotificationService.puml)
+- [Диаграмма компонентов DeviceApiGateway](diagrams/component/SmartHome_component_DeviceApiGateway.puml)
+
 
 **Диаграмма кода (Code)**
 
