@@ -100,12 +100,12 @@
 - [Диаграмма компонентов TelemetryService](diagrams/component/SmartHome_component_TelemetryService.puml)
 - [Диаграмма компонентов UserService](diagrams/component/SmartHome_component_UserService.puml)
 - [Диаграмма компонентов NotificationService](diagrams/component/SmartHome_component_NotificationService.puml)
-- [Диаграмма компонентов DeviceApiGateway](diagrams/component/SmartHome_component_DeviceApiGateway.puml)
+- [Диаграмма компонентов DeviceApiGateway](diagrams/component/SmartHome_component_DeviceGateway.puml)
 
 
 **Диаграмма кода (Code)**
 
-Добавьте одну диаграмму или несколько.
+- [Диаграмма кода LightingManagement](diagrams/code/SmartHome_Code_LightingManagement.puml)
 
 # Задание 3. Разработка ER-диаграммы
 

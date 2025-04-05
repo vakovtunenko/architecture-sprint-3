@@ -1,0 +1,121 @@
+@startuml
+package "Device Management Service" {
+
+  interface "Device" {
+      + String getId()
+      + String getState()
+      + String getDeviceType()
+  }
+
+  interface "DeviceCommand" {
+      + String getCommandType()
+  }
+
+  interface "DeviceEvent" {
+      + String getEventType()
+  }
+
+  interface "DeviceHandler" {
+      + void executeCommand(DeviceCommand command)
+      + String getState(String id)
+      + void initializeDevice(Device device)
+      + void processEvent(DeviceEvent event)
+  }
+
+  package "LightingManagement" {
+
+    interface "LightingDevice" {
+    }
+
+    class "SmartBulbLighting" {
+        + String id
+        + String state
+        + String deviceType
+        + int brightness
+        + String getId()
+        + String getState()
+        + String getDeviceType()
+        + int getBrightness()
+    }
+
+    class "SmartBulbLightingDeviceCommand" {
+        + String commandType
+        + String getCommandType()
+    }
+
+    class "SmartBulbLightingDeviceEvent" {
+        + String eventType
+        + String getEventType()
+    }
+
+    interface "LightingDeviceHandler" {
+    }
+
+    class "SmartBulbLightingDeviceHandler" {
+       + void executeCommand(SmartBulbLightingDeviceCommand command)
+       + String getState(String id)
+       + void initializeDevice(SmartBulbLighting device)
+       + void processEvent(SmartBulbLightingDeviceEvent event)
+    }
+
+    class "LightingManagementController" {
+       - LightingManagementService lightingManagementService
+       + void handleRequest(HttpRequest request)
+    }
+
+    class "LightingManagementService" {
+       - List<LightingDeviceHandler> deviceHandlers
+       - LightingManagementRepository lightingManagementRepository
+       - KafkaProducer kafkaProducer
+       + LightingDevice saveLightingDevice(LightingDevice device)
+       + LightingDevice getLightingDevice(String id)
+       + void turnOnLight(String id)
+       + void turnOffLight(String id)
+       + void setBrightness(String id, int level)
+       + void processMessage(String message)
+    }
+
+    class "LightingManagementRepository" {
+        + LightingDevice saveLightingDevice(LightingDevice lightingDevice)
+        + LightingDevice getLightingDevice(String id)
+    }
+
+    class "KafkaProducer" {
+       + void send(String message)
+    }
+
+    class "KafkaConsumer" {
+       - LightingManagementService lightingManagementService
+       + void consume(String message)
+    }
+
+  }
+
+  component "Kafka" as kafka {
+  }
+
+
+  Device <|-- LightingDevice
+  LightingDevice <|.. SmartBulbLighting
+
+  DeviceHandler <|-- LightingDeviceHandler
+  LightingDeviceHandler <|-- SmartBulbLightingDeviceHandler
+
+  DeviceCommand <|.. SmartBulbLightingDeviceCommand
+  DeviceEvent <|.. SmartBulbLightingDeviceEvent
+
+  SmartBulbLightingDeviceHandler ..> SmartBulbLightingDeviceCommand : uses
+  SmartBulbLightingDeviceHandler ..> SmartBulbLightingDeviceEvent : uses
+  SmartBulbLightingDeviceHandler ..> SmartBulbLighting : uses
+
+  LightingManagementController --> LightingManagementService : delegates to
+  LightingManagementService *-- LightingDeviceHandler : manages
+  LightingManagementService --> LightingManagementRepository : uses
+
+  LightingManagementService --> KafkaProducer : uses
+  KafkaConsumer --> LightingManagementService : uses
+
+  KafkaProducer -> kafka : send messages
+  kafka -> KafkaConsumer : deliver messages
+}
+@enduml
