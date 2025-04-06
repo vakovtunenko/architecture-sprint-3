@@ -1,0 +1,215 @@
+@startuml
+
+entity User {
+  *id : Integer <<PK>>
+  --
+  firstName : String
+  lastName : String
+  middleName : String
+  email : String
+  phone : String
+  statusId : Integer <<FK>>
+  created : DateTime
+  updated : DateTime
+}
+
+entity UserStatus {
+  *id : Integer <<PK>>
+  --
+  statusName : String
+}
+
+entity AuthProvider {
+  *id : Integer <<PK>>
+  --
+  providerName : String
+  providerType : Enum
+}
+
+entity UserAuth {
+  *id : Integer <<PK>>
+  --
+  userId : Integer <<FK>>
+  providerId : Integer <<FK>>
+  authIdentifier : String
+  authSecret : String
+  lastLogin : DateTime
+  created : DateTime
+  updated : DateTime
+}
+
+entity Role {
+  *id : Integer <<PK>>
+  --
+  roleName : String
+}
+
+entity UserRole {
+  *id : Integer <<PK>>
+  --
+  userId : Integer <<FK>>
+  roleId : Integer <<FK>>
+}
+
+entity Permission {
+  *id : Integer <<PK>>
+  --
+  permissionName : String
+  description : String
+}
+
+entity RolePermission {
+  *id : Integer <<PK>>
+  --
+  roleId : Integer <<FK>>
+  permissionId : Integer <<FK>>
+}
+
+entity House {
+  *id : Integer <<PK>>
+  --
+  userId : Integer <<FK>>
+  address : String
+  name : String
+  description : String
+  created : DateTime
+  updated : DateTime
+}
+
+entity Notification {
+  *id : Integer <<PK>>
+  --
+  userId : Integer <<FK>>
+  channelId : Integer <<FK>>
+  message : Text
+  sent : DateTime
+  statusId : Integer <<FK>>
+}
+
+entity NotificationChannel {
+  *id : Integer <<PK>>
+  --
+  channelName : String
+}
+
+entity NotificationStatus {
+  *id : Integer <<PK>>
+  --
+  statusName : String
+}
+
+entity Device {
+  *id : Integer <<PK>>
+  --
+  houseId : Integer <<FK>>
+  deviceTypeId : Integer <<FK>>
+  statusId : Integer <<FK>>
+  deviceName : String
+  serialNumber : String
+  created : DateTime
+  updated : DateTime
+}
+
+entity DeviceType {
+  *id : Integer <<PK>>
+  --
+  typeName : String
+}
+
+entity DeviceStatus {
+  *id : Integer <<PK>>
+  --
+  statusName : String
+}
+
+entity Module {
+  *id : Integer <<PK>>
+  --
+  houseId : Integer <<FK>>
+  moduleName : String
+  description : String
+  created : DateTime
+  updated : DateTime
+}
+
+entity ModuleDeviceMapping {
+  *id : Integer <<PK>>
+  --
+  moduleId : Integer <<FK>>
+  deviceId : Integer <<FK>>
+}
+
+entity Alert {
+  *id : Integer <<PK>>
+  --
+  message : Text
+  triggered : DateTime
+  alertRuleId : Integer <<FK>>
+  alertLevelId : Integer <<FK>>
+}
+
+entity AlertRule {
+  *id : Integer <<PK>>
+  --
+  userId : Integer <<FK>>
+  deviceId : Integer <<FK>>
+  ruleName : String
+  condition : String
+  alertActionId : Integer <<FK>>
+  created : DateTime
+  updated : DateTime
+}
+
+entity AlertLevel {
+  *id : Integer <<PK>>
+  --
+  levelName : String
+  description : String
+}
+
+entity AlertAction {
+  *id : Integer <<PK>>
+  --
+  actionName : String
+}
+
+entity Telemetry {
+  *id : Integer <<PK>>
+  --
+  deviceId : Integer <<FK>>
+  received : DateTime
+  metrics : Text
+}
+
+UserStatus ||--o{ User
+
+User ||--o{ UserAuth
+AuthProvider ||--o{ UserAuth
+
+User ||--o{ UserRole
+Role ||--o{ UserRole
+Role ||--o{ RolePermission
+Permission ||--o{ RolePermission
+
+User ||--o{ House
+
+User ||--o{ Notification
+NotificationChannel ||--o{ Notification
+NotificationStatus ||--o{ Notification
+
+House ||--o{ Device
+DeviceType ||--o{ Device
+DeviceStatus ||--o{ Device
+House ||--o{ Module
+Module ||--o{ ModuleDeviceMapping
+Device ||--o{ ModuleDeviceMapping
+
+AlertRule ||--o{ Alert
+AlertLevel ||--o{ Alert
+User ||--o{ AlertRule
+Device ||--o{ AlertRule
+AlertAction ||--o{ AlertRule
+
+Device ||--o{ Telemetry
+
+@enduml
