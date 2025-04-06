@@ -5,7 +5,8 @@ top to bottom direction
 
 !includeurl ../c4_templates/C4_Container.puml
 
-AddRelTag("async", $textColor="orange", $lineColor="orange", $lineStyle = DashedLine())
+AddRelTag("async-send", $textColor="orange", $lineColor="orange", $lineStyle = DashedLine())
+AddRelTag("async-read", $textColor="green", $lineColor="green", $lineStyle = DashedLine())
 
 Person(User, "Пользователь", "Пользователь системы")
 Person(Admin, "Администратор", "Администратор системы")
@@ -70,7 +71,7 @@ Rel(ApiGateway, DeviceManagementService, "Маршрутизирует запр�
 Rel(ApiGateway, MonitoringService, "Маршрутизирует запросы")
 Rel(ApiGateway, Redis, "Считывает данные из кеша")
 
-Rel(DeviceGateway, Kafka, "Отправка сообщений с сырыми показателями, данными, регистрацией устройств", $tags="async")
+Rel(DeviceGateway, Kafka, "Отправка сообщений с сырыми показателями, данными, регистрацией устройств", $tags="async-send")
 Rel(DeviceGateway, Devices, "Отправляет команды")
 
 Rel(UserService, UserServiceDatabase, "Чтение/запись данных")
@@ -85,28 +86,28 @@ Rel(SmartHomeService, DeviceManagementService, "Запрашивает данн�
 Rel(AutomationScriptService, AutomationScriptServiceDatabase, "Чтение/запись данных")
 Rel(AutomationScriptService, SmartHomeService, "Запрашивает данные")
 Rel(AutomationScriptService, DeviceManagementService, "Запрашивает данные")
-Rel(AutomationScriptService, Kafka, "Отправляет сообщения о необходимости выполнить команду", $tags="async")
+Rel(AutomationScriptService, Kafka, "Отправляет сообщения о необходимости выполнить команду", $tags="async-send")
 
 Rel(DeviceManagementService, DeviceManagementServiceDatabase, "Чтение/запись данных")
 Rel(DeviceManagementService, TelemetryService, "Запрашивает данные")
-Rel(DeviceManagementService, Kafka, "Отправляет сообщения с командами, информацию о неисправности устройства", $tags="async")
+Rel(DeviceManagementService, Kafka, "Отправляет сообщения с командами, информацию о неисправности устройства", $tags="async-send")
 
 Rel(MonitoringService, MonitoringServiceDatabase, "Чтение/запись данных")
 Rel(MonitoringService, TelemetryService, "Запрашивает данные")
-Rel(MonitoringService, Kafka, "Отправляет сообщения о необходимости оповещения пользователя", $tags="async")
+Rel(MonitoringService, Kafka, "Отправляет сообщения о необходимости оповещения пользователя", $tags="async-send")
 
 Rel(TelemetryService, TelemetryServiceDatabase, "Чтение/запись данных")
-Rel(TelemetryService, Kafka, "Отправляет сообщения со структурированными показателями", $tags="async")
+Rel(TelemetryService, Kafka, "Отправляет сообщения со структурированными показателями", $tags="async-send")
 
 Rel(NotificationService, NotificationServiceDatabase, "Чтение/запись данных")
 Rel(NotificationService, UserService, "Запрашивает данные")
 Rel(NotificationService, NotificationChannels, "Отправляет уведомление")
 
-Rel(Kafka, DeviceManagementService, "Читает сообщения о необходимости выполнить команду, с данными с устройства, о новом устройстве", $tags="async")
-Rel(Kafka, MonitoringService, "Читает сообщения о неисправности устройства, со структурированными показателями", $tags="async")
-Rel(Kafka, NotificationService, "Читает сообщения о необходимости уведомления пользователя", $tags="async")
-Rel(Kafka, DeviceGateway, "Читает сообщения с командами", $tags="async")
-Rel(Kafka, TelemetryService, "Читает сообщения с сырыми показателями", $tags="async")
+Rel(Kafka, DeviceManagementService, "Читает сообщения о необходимости выполнить команду, с данными с устройства, о новом устройстве", $tags="async-read")
+Rel(Kafka, MonitoringService, "Читает сообщения о неисправности устройства, со структурированными показателями", $tags="async-read")
+Rel(Kafka, NotificationService, "Читает сообщения о необходимости уведомления пользователя", $tags="async-read")
+Rel(Kafka, DeviceGateway, "Читает сообщения с командами", $tags="async-read")
+Rel(Kafka, TelemetryService, "Читает сообщения с сырыми показателями", $tags="async-read")
 
 Rel(Devices, DeviceGateway, "Отправка показателей, данных, регистрация устройства")
 @enduml

@@ -42,7 +42,7 @@
 
 **Домен: Умный дом**
 - **Поддомен: Управление умным домом**
-  - **Контекст: Управление умным домом** - создание, редактирование, просмотр умных домов, агрегация устройств пользователя
+  - **Контекст: Управление умным домом** - создание, редактирование, просмотр умных домов
 - **Поддомен: Автоматизация** 
   - **Контекст: Сценарии автоматизации** - создание пользовательских сценариев, их хранение и выполнение
 
@@ -54,7 +54,7 @@
 - **Поддомен: Управление воротами**
   - **Контекст: Управление воротами** - логика регистрации электронных замков, отпирание/запирание, просмотр состояния и тд 
 - **Поддомен: Наблюдение за домом**
-  - **Контекст: Наблюдение за домом** - логика регистрации наблюдательных приборов, просмотр получаемой информации и тд 
+  - **Контекст: Наблюдение за домом** - логика регистрации наблюдательных приборов, наблюдение и тд 
 
 **Домен: Мониторинг и телеметрия**
 - **Поддомен: Телеметрия**
@@ -81,35 +81,35 @@
 
 ### 5. Визуализация контекста системы — диаграмма С4
 
-[Диаграмма контекста](diagrams/context/SmartHome_context.puml)
+Диаграмма контекста [PUML](diagrams/context/SmartHome_context.puml) / [PNG](diagrams/context/SmartHome_context.png)
 
 
 # Задание 2. Проектирование микросервисной архитектуры
 
 **Диаграмма контейнеров (Containers)**
 
-[Диаграмма контейнеров](diagrams/container/SmartHome_container.puml)
+Диаграмма контейнеров [PUML](diagrams/container/SmartHome_container.puml) / [PNG](diagrams/container/SmartHome_container.png)
 
 **Диаграмма компонентов (Components)**
 
-- [Диаграмма компонентов AuthService](diagrams/component/SmartHome_component_AuthService.puml)
-- [Диаграмма компонентов SmartHomeService](diagrams/component/SmartHome_component_SmartHomeService.puml)
-- [Диаграмма компонентов AutomationScriptService](diagrams/component/SmartHome_component_AutomationScriptService.puml)
-- [Диаграмма компонентов DeviceManagementService](diagrams/component/SmartHome_component_DeviceManagementService.puml)
-- [Диаграмма компонентов MonitoringService](diagrams/component/SmartHome_component_MonitoringService.puml)
-- [Диаграмма компонентов TelemetryService](diagrams/component/SmartHome_component_TelemetryService.puml)
-- [Диаграмма компонентов UserService](diagrams/component/SmartHome_component_UserService.puml)
-- [Диаграмма компонентов NotificationService](diagrams/component/SmartHome_component_NotificationService.puml)
-- [Диаграмма компонентов DeviceApiGateway](diagrams/component/SmartHome_component_DeviceGateway.puml)
+- Диаграмма компонентов AuthService [PUML](diagrams/component/SmartHome_component_AuthService.puml) / [PNG](diagrams/component/SmartHome_component_AuthService.png)
+- Диаграмма компонентов SmartHomeService [PUML](diagrams/component/SmartHome_component_SmartHomeService.puml) / [PNG](diagrams/component/SmartHome_component_SmartHomeService.png)
+- Диаграмма компонентов AutomationScriptService [PUML](diagrams/component/SmartHome_component_AutomationScriptService.puml) / [PNG](diagrams/component/SmartHome_component_AutomationScriptService.png)
+- Диаграмма компонентов DeviceManagementService [PUML](diagrams/component/SmartHome_component_DeviceManagementService.puml) / [PNG](diagrams/component/SmartHome_component_DeviceManagementService.png)
+- Диаграмма компонентов MonitoringService [PUML](diagrams/component/SmartHome_component_MonitoringService.puml) / [PNG](diagrams/component/SmartHome_component_MonitoringService.png)
+- Диаграмма компонентов TelemetryService [PUML](diagrams/component/SmartHome_component_TelemetryService.puml) / [PNG](diagrams/component/SmartHome_component_TelemetryService.png)
+- Диаграмма компонентов UserService [PUML](diagrams/component/SmartHome_component_UserService.puml) / [PNG](diagrams/component/SmartHome_component_UserService.png)
+- Диаграмма компонентов NotificationService [PUML](diagrams/component/SmartHome_component_NotificationService.puml) / [PNG](diagrams/component/SmartHome_component_NotificationService.png)
+- Диаграмма компонентов DeviceApiGateway [PUML](diagrams/component/SmartHome_component_DeviceGateway.puml) / [PNG](diagrams/component/SmartHome_component_DeviceGateway.png)
 
 
 **Диаграмма кода (Code)**
 
-- [Диаграмма кода LightingManagement](diagrams/code/SmartHome_Code_LightingManagement.puml)
+- Диаграмма кода LightingManagement [PUML](diagrams/code/SmartHome_Code_LightingManagement.puml) / [PNG](diagrams/code/SmartHome_Code_LightingManagement.png)
 
 # Задание 3. Разработка ER-диаграммы
 
-- [ER-диаграмма](diagrams/er/SmartHome_er.puml)
+- ER-диаграмма [PUML](diagrams/er/SmartHome_er.puml) / [PNG](diagrams/er/SmartHome_er.png)
 
 # ❌ Задание 4. Создание и документирование API
 
