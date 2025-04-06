@@ -1,0 +1,33 @@
+@startuml
+title Диаграмма Компонентов: Notification Service
+
+!includeurl ../c4_templates/C4_Component.puml
+
+ContainerDb(NotificationServiceDatabase, "Notification Service Database", "PostgreSQL", "Хранение уведомлений")
+ContainerQueue_Ext(Kafka, "Kafka", "Kafka", "Брокер сообщений")
+Container_Ext(UserService, "User Service", "Java, Spring Boot", "Обработка персональных данных пользователя")
+System_Ext(NotificationChannels, "Каналы связи", "Почта, СМС и тд")
+
+Container(NotificationService, "Notification Service", "Java, Spring Boot", "Рассылка уведомлений по различным каналам") {
+    Component(NotificationController, "NotificationController", "REST API сервиса")
+    Component(NotificationServiceLayer, "NotificationServiceLayer", "Реализация бизнес-логики")
+    Component(NotificationChannelHandler, "NotificationChannelHandler", "Реализация логики работы с каналом")
+    Component(NotificationRepositoryLayer, "NotificationRepositoryLayer", "Слой взаимодействия с БД")
+    Component(NotificationHTTPClient, "NotificationHTTPClient", "HTTP клиент")
+    Component(KafkaListener, "KafkaListener", "Компонент чтения сообщений из кафки")
+}
+
+Rel(NotificationController, NotificationServiceLayer, "Вызов бизнес-логики")
+Rel(NotificationServiceLayer, NotificationRepositoryLayer, "Обращение к слою доступа к данным")
+Rel(NotificationServiceLayer, NotificationHTTPClient, "Отправка запросов другим сервисам")
+Rel(NotificationServiceLayer, NotificationChannelHandler, "Доставить уведомление через канал")
+Rel(NotificationRepositoryLayer, NotificationServiceDatabase, "Чтение/запись данных")
+Rel(NotificationHTTPClient, UserService, "Отправка запроса")
+Rel(NotificationChannelHandler, NotificationChannels, "Отправка уведомления в канал")
+
+Rel(KafkaListener, NotificationServiceLayer, "Обработка сообщений")
+
+Rel(Kafka, KafkaListener, "Чтение сообщений")
+
+
+@enduml

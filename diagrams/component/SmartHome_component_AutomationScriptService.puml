@@ -1,0 +1,31 @@
+@startuml
+title Диаграмма Компонентов: Automation Script Service
+
+!includeurl ../c4_templates/C4_Component.puml
+
+ContainerDb(AutomationScriptServiceDatabase, "Automation Script Service Database", "PostgreSQL", "Хранение скриптов автоматизации умного дома")
+ContainerQueue_Ext(Kafka, "Kafka", "Kafka", "Брокер сообщений")
+Container_Ext(DeviceManagementService, "Device Management Service", "Java, Spring Boot", "Управление устройствами")
+Container_Ext(SmartHomeService, "Smart Home Service", "Java, Spring Boot", "Управление умным домом")
+
+Container(AutomationScriptService, "Automation Script Service", "Java, Spring Boot", "Автоматизация умного дома") {
+    Component(AutomationScriptController, "AutomationScriptController", "REST API сервиса")
+    Component(AutomationScriptServiceLayer, "AutomationScriptServiceLayer", "Реализация бизнес-логики")
+    Component(AutomationScriptScheduler, "AutomationScriptScheduler", "Реализация логики запуска скриптов")
+    Component(AutomationScriptRepositoryLayer, "AutomationScriptRepositoryLayer", "Слой взаимодействия с БД")
+    Component(KafkaProducer, "KafkaProducer", "Компонент отправки сообщений в кафку")
+    Component(AutomationScriptHTTPClient, "AutomationScriptHTTPClient", "HTTP клиент")
+}
+
+Rel(AutomationScriptController, AutomationScriptServiceLayer, "Вызов бизнес-логики")
+Rel(AutomationScriptScheduler, AutomationScriptServiceLayer, "Вызов бизнес-логики")
+Rel(AutomationScriptServiceLayer, AutomationScriptRepositoryLayer, "Обращение к слою доступа к данным")
+Rel(AutomationScriptServiceLayer, KafkaProducer, "Отправка сообщений")
+Rel(AutomationScriptServiceLayer, AutomationScriptHTTPClient, "Отправка запросов другим сервисам")
+Rel(AutomationScriptRepositoryLayer, AutomationScriptServiceDatabase, "Чтение/запись данных")
+Rel(KafkaProducer, Kafka, "Отправка сообщений")
+Rel(AutomationScriptHTTPClient, DeviceManagementService, "Отправка запроса")
+Rel(AutomationScriptHTTPClient, SmartHomeService, "Отправка запроса")
+
+
+@enduml

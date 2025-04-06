@@ -1,0 +1,27 @@
+@startuml
+title Диаграмма Компонентов: Auth Service
+
+!includeurl ../c4_templates/C4_Component.puml
+
+System_Ext(oAuthProviders, "Сервис провайдеры oAuth", "Яндекс, Вк и тд")
+ContainerDb(AuthServiceDatabase, "Auth Service Database", "PostgreSQL", "Хранение учетных данных пользователя")
+ContainerDb_Ext(Redis, "Redis", "Redis", "Распределенный кеш")
+
+Container(AuthService, "Auth Service", "Java, Spring Boot", "Логика работы с учетными данными пользователя") {
+    Component(AuthController, "AuthController", "REST API сервиса")
+    Component(AuthServiceLayer, "AuthServiceLayer", "Реализация бизнес-логики")
+    Component(oAuthHandler, "oAuthClientHandler", "Реализация логики клиента oAuth")
+    Component(AuthRepositoryLayer, "AuthRepositoryLayer", "Слой взаимодействия с БД")
+    Component(RedisRepositoryLayer, "RedisRepositoryLayer", "Слой взаимодействия с Redis")
+}
+
+Rel(AuthController, AuthServiceLayer, "Вызов бизнес-логики")
+Rel(AuthServiceLayer, AuthRepositoryLayer, "Обращение к слою доступа к данным")
+Rel(AuthServiceLayer, RedisRepositoryLayer, "Обращение к слою доступа к кешу")
+Rel(AuthServiceLayer, oAuthHandler, "Вызов логики клиента oAuth")
+Rel(AuthRepositoryLayer, AuthServiceDatabase, "Чтение/запись данных")
+Rel(RedisRepositoryLayer, Redis, "Чтение/запись данных")
+Rel(oAuthHandler, oAuthProviders, "Взаимодействие с внешними провайдерами")
+
+
+@enduml

@@ -1,0 +1,24 @@
+@startuml
+title Диаграмма Контекста
+
+top to bottom direction
+
+!includeurl ../c4_templates/C4_Context.puml
+
+Person(User, "Пользователь", "Пользователь системы")
+Person(Admin, "Администратор", "Администратор системы")
+Person(Employee, "Сотрудник", "Сотрудник компании")
+
+System(SmartHomeSystem, "Умный Дом", "Система по управлению Умным Домом")
+
+Rel(User, SmartHomeSystem, "Управляет отоплением, просматривает температуру, оплачивает услуги")
+Rel(Admin, SmartHomeSystem,"Администрирует систему")
+Rel(Employee, SmartHomeSystem, "Регистрирует пользователей, системы отопления и устанавливает датчики")
+
+System_Ext(HeatingSystem, "Обогревательная Система", "Устройство для управления отоплением")
+System_Ext(TemperatureSensor, "Датчик Температуры", "Устройство для измерения температуры")
+
+Rel(SmartHomeSystem,HeatingSystem,"Отправляет команды по управлению отоплением, собирает данные по состоянию устройства")
+Rel(SmartHomeSystem,TemperatureSensor,"Собирает показания датчиков")
+
+@enduml

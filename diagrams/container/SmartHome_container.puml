@@ -1,0 +1,113 @@
+@startuml
+title Диаграмма Контейнеров
+
+top to bottom direction
+
+!includeurl ../c4_templates/C4_Container.puml
+
+AddRelTag("async-send", $textColor="orange", $lineColor="orange", $lineStyle = DashedLine())
+AddRelTag("async-read", $textColor="green", $lineColor="green", $lineStyle = DashedLine())
+
+Person(User, "Пользователь", "Пользователь системы")
+Person(Admin, "Администратор", "Администратор системы")
+Person(Employee, "Сотрудник", "Сотрудник компании")
+
+System(SmartHomeSystem, "Умный Дом", "Система по управлению Умным Домом")
+
+Container_Boundary(SmartHomeSystem, "Умный Дом") {
+  Container(UserWebApp, "Веб-интерфейс пользователя", "React", "Взаимодействие с пользователем")
+  Container(AdminWebApp, "Веб-интерфейс администратора", "React", "Взаимодействие с администратором")
+  Container(EmployeeWebApp, "Веб-интерфейс сотрудника", "React", "Взаимодействие с сотрудником")
+
+  Container(ApiGateway, "Api Gateway", "Java, Spring Cloud Gateway", "Маршрутизация, аутентификация, авторизация, обогащение запросов пользователей")
+
+  Container(DeviceGateway, "Device Gateway", "Java, Spring Boot", "Инкапсулирует логику взаимодействия с устройствами")
+
+  Container(UserService, "User Service", "Java, Spring Boot", "Обработка персональных данных пользователя")
+  ContainerDb(UserServiceDatabase, "User Service Database", "PostgreSQL", "Хранение персональных данных пользователя")
+
+  Container(AuthService, "Auth Service", "Java, Spring Boot", "Логика работы с учетными данными пользователя")
+  ContainerDb(AuthServiceDatabase, "Auth Service Database", "PostgreSQL", "Хранение учетных данных пользователя")
+
+  Container(SmartHomeService, "Smart Home Service", "Java, Spring Boot", "Управление умным домом")
+  ContainerDb(SmartHomeServiceDatabase, "Smart Home Service Database", "PostgreSQL", "Хранение данных по умному дому")
+
+  Container(AutomationScriptService, "Automation Script Service", "Java, Spring Boot", "Автоматизация умного дома")
+  ContainerDb(AutomationScriptServiceDatabase, "Automation Script Service Database", "PostgreSQL", "Хранение скриптов автоматизации умного дома")
+
+  Container(DeviceManagementService, "Device Management Service", "Java, Spring Boot", "Управление устройствами")
+  ContainerDb(DeviceManagementServiceDatabase, "Device Management Service Database", "PostgreSQL", "Хранение данных устройств")
+
+  Container(MonitoringService, "Monitoring Service", "Java, Spring Boot", "Мониторинг и алертинг")
+  ContainerDb(MonitoringServiceDatabase, "Monitoring Service Database", "PostgreSQL", "Хранение настроек пользователей для алертинга")
+
+  Container(TelemetryService, "Telemetry Service", "Java, Spring Boot", "Обработка показателей с устройств и датчиков")
+  ContainerDb(TelemetryServiceDatabase, "Telemetry Service Database", "PostgreSQL", "Хранение показателей")
+
+  Container(NotificationService, "Notification Service", "Java, Spring Boot", "Рассылка уведомлений по различным каналам")
+  ContainerDb(NotificationServiceDatabase, "Notification Service Database", "PostgreSQL", "Хранение уведомлений")
+
+  ContainerQueue(Kafka, "Kafka", "Kafka", "Брокер сообщений")
+  ContainerDb(Redis, "Redis", "Redis", "Распределенный кеш")
+}
+
+System_Ext(Devices, "Устройства", "Различные устройства, приборы, датчики и тп")
+System_Ext(NotificationChannels, "Каналы связи", "Почта, СМС и тд")
+System_Ext(oAuthProviders, "Сервис провайдеры oAuth", "Яндекс, Вк и тд")
+
+Rel(User, UserWebApp, "Пользуется системой")
+Rel(Admin, AdminWebApp, "Администрирует систему")
+Rel(Employee, EmployeeWebApp, "Работает с системой")
+
+Rel(UserWebApp, ApiGateway, "Направляет запросы пользователя")
+Rel(AdminWebApp, ApiGateway, "Направляет запросы администратора")
+Rel(EmployeeWebApp, ApiGateway, "Направляет запросы сотрудника")
+
+Rel(ApiGateway, UserService, "Маршрутизирует запросы, запрашивает данные")
+Rel(ApiGateway, AuthService, "Маршрутизирует запросы, аутентифицирует, авторизует, запрашивает данные")
+Rel(ApiGateway, SmartHomeService, "Маршрутизирует запросы")
+Rel(ApiGateway, AutomationScriptService, "Маршрутизирует запросы")
+Rel(ApiGateway, DeviceManagementService, "Маршрутизирует запросы")
+Rel(ApiGateway, MonitoringService, "Маршрутизирует запросы")
+Rel(ApiGateway, Redis, "Считывает данные из кеша")
+
+Rel(DeviceGateway, Kafka, "Отправка сообщений с сырыми показателями, данными, регистрацией устройств", $tags="async-send")
+Rel(DeviceGateway, Devices, "Отправляет команды")
+
+Rel(UserService, UserServiceDatabase, "Чтение/запись данных")
+
+Rel(AuthService, AuthServiceDatabase, "Чтение/запись данных")
+Rel(AuthService, Redis, "Кладет данные в кеш")
+Rel_Left(AuthService, oAuthProviders, "oAuth 2.0")
+
+Rel(SmartHomeService, SmartHomeServiceDatabase, "Чтение/запись данных")
+Rel(SmartHomeService, DeviceManagementService, "Запрашивает данные")
+
+Rel(AutomationScriptService, AutomationScriptServiceDatabase, "Чтение/запись данных")
+Rel(AutomationScriptService, SmartHomeService, "Запрашивает данные")
+Rel(AutomationScriptService, DeviceManagementService, "Запрашивает данные")
+Rel(AutomationScriptService, Kafka, "Отправляет сообщения о необходимости выполнить команду", $tags="async-send")
+
+Rel(DeviceManagementService, DeviceManagementServiceDatabase, "Чтение/запись данных")
+Rel(DeviceManagementService, TelemetryService, "Запрашивает данные")
+Rel(DeviceManagementService, Kafka, "Отправляет сообщения с командами, информацию о неисправности устройства", $tags="async-send")
+
+Rel(MonitoringService, MonitoringServiceDatabase, "Чтение/запись данных")
+Rel(MonitoringService, TelemetryService, "Запрашивает данные")
+Rel(MonitoringService, Kafka, "Отправляет сообщения о необходимости оповещения пользователя", $tags="async-send")
+
+Rel(TelemetryService, TelemetryServiceDatabase, "Чтение/запись данных")
+Rel(TelemetryService, Kafka, "Отправляет сообщения со структурированными показателями", $tags="async-send")
+
+Rel(NotificationService, NotificationServiceDatabase, "Чтение/запись данных")
+Rel(NotificationService, UserService, "Запрашивает данные")
+Rel(NotificationService, NotificationChannels, "Отправляет уведомление")
+
+Rel(Kafka, DeviceManagementService, "Читает сообщения о необходимости выполнить команду, с данными с устройства, о новом устройстве", $tags="async-read")
+Rel(Kafka, MonitoringService, "Читает сообщения о неисправности устройства, со структурированными показателями", $tags="async-read")
+Rel(Kafka, NotificationService, "Читает сообщения о необходимости уведомления пользователя", $tags="async-read")
+Rel(Kafka, DeviceGateway, "Читает сообщения с командами", $tags="async-read")
+Rel(Kafka, TelemetryService, "Читает сообщения с сырыми показателями", $tags="async-read")
+
+Rel(Devices, DeviceGateway, "Отправка показателей, данных, регистрация устройства")
+@enduml
